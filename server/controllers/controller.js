@@ -84,7 +84,7 @@ class Controller{
     }
     static async post(req, res, next){
         try {
-            const allPost = await Post.findAll({order:[['votes', 'DESC']]})
+            const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
 
             res.status(200).json({
                 data: allPost
@@ -111,6 +111,7 @@ class Controller{
             user.Categories.map(el => followingId.push(el.id))
 
             const allPost = await Post.findAll({
+                attributes: { exclude: ['UserId'] },
                 where:{
                     CategoryId:{
                         [Op.in]: followingId
@@ -128,7 +129,7 @@ class Controller{
     }
     static async top5Post(req, res, next){
         try { 
-            const allPost = await Post.findAll({limit: 5,order:[['votes', 'DESC']]})
+            const allPost = await Post.findAll({attributes: { exclude: ['UserId'] },limit: 5,order:[['votes', 'DESC']]})
 
             res.status(200).json({
                 data: allPost
@@ -139,7 +140,7 @@ class Controller{
     }
     static async postById(req, res, next){
         try { 
-            const postById = await Post.findByPk(req.params.id)
+            const postById = await Post.findByPk(req.params.id, {attributes: { exclude: ['UserId'] }})
 
             res.status(200).json({
                 data: postById
@@ -150,7 +151,13 @@ class Controller{
     }
     static async addPost(req, res, next){
         try { 
-            const newPost  = await Post.create(req.body)
+            const {title, CategoryId} = req.body
+            const UserId = req.user.id
+            const newPost  = await Post.create({
+                title,
+                CategoryId,
+                UserId
+            })
 
             res.status(201).json({ data : newPost})
         } catch (error) {
@@ -159,7 +166,7 @@ class Controller{
     }
     static async deletePost(req, res, next){
         try { 
-            const deleted = await Post.findByPk(req.params.id)
+            const deleted = await Post.findByPk(req.params.id, {attributes: { exclude: ['UserId'] },})
             if(!deleted){
                 throw {name: "not found"}
             }
@@ -195,7 +202,7 @@ class Controller{
     }
     static async postCategory(req, res, next){
         try { 
-            const postPerCategory = await Post.findAll({order:[['votes', 'DESC']],where:{CategoryId: req.params.id}})
+            const postPerCategory = await Post.findAll({attributes: { exclude: ['UserId'] },order:[['votes', 'DESC']],where:{CategoryId: req.params.id}})
 
             res.status(200).json({
                 data: postPerCategory
