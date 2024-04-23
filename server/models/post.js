@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    CategoryId: DataTypes.INTEGER
+    CategoryId: DataTypes.INTEGER,
+    UserId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Post',
