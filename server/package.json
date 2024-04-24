@@ -18,7 +18,8 @@
     "google-auth-library": "^9.8.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "socket.io": "^4.7.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
