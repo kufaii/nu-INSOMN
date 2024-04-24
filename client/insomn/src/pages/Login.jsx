@@ -60,9 +60,9 @@ export default function Login({}) {
           authorization: `Bearer ` + localStorage.access_token,
         },
       });
-      console.log(">>>>>>>>>>>>>>>", data);
+      // console.log(">>>>>>>>>>>>>>>", data);
       setImage(data[0]);
-      console.log(">>>>>>>>>>>>>>>asdasd", image);
+      // console.log(">>>>>>>>>>>>>>>asdasd", image);
     } catch (error) {
       console.log(error);
     }

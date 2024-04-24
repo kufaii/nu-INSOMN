@@ -7,6 +7,18 @@ import { fetchPost } from "../store/features/post/Post";
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
 
+  const deleteHandler = async () => {
+    await axios({
+      method: "delete",
+      url: `/post/${post.id}`,
+      headers: {
+        authorization: `Bearer ` + localStorage.access_token,
+      },
+    });
+    socket.emit("new-post");
+    dispatch(fetchPost());
+  };
+
   const voteHandler = async (e) => {
     try {
       await axios({
@@ -42,14 +54,14 @@ export default function PostCard({ post }) {
           Votes: {post.votes} Created at: {post.createdAt}
         </p>
       </Link>
-      <Link to={`/delete-post/${post.id}`}>
-        <button
-          type="button"
-          class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-        >
-          Delete
-        </button>
-      </Link>
+
+      <button
+        onClick={deleteHandler}
+        type="button"
+        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+      >
+        Delete
+      </button>
       <button
         onClick={voteHandler}
         value={1}
