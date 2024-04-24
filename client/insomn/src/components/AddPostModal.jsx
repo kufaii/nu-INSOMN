@@ -64,9 +64,9 @@ export default function AddPostModal({ idCategory }) {
       };
 
       socket.emit("new-post", idCategory);
+      dispatch(fetchPostByCategory(post.Category.id));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
-      // dispatch(fetchPostByCategory(1)); //belum dinamis
       handleModalToggle();
     } catch (error) {
       console.log("ERROR GANNN >>>>>>", error);
