@@ -37,5 +37,5 @@ export default function Redirect({ page, state }) {
     navigate(link);
   }, []);
 
-  return <></>;
+  return null;
 }

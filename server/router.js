@@ -29,5 +29,4 @@ router.post('/comment/:id', authentication, Controller.addComment)
 router.get('/user', authentication, Controller.user)
 router.put('/user/:id', authentication, Controller.editUser)
 
-
 module.exports = router
