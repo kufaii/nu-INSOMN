@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../config";
 import { useState } from "react";
+import socket from "../socket";
 
 export default function PostCard({ post }) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function PostCard({ post }) {
         },
       });
 
+      socket.emit("new-vote");
       navigate("/redirect/home");
     } catch (error) {
       console.log(error);
