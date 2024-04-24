@@ -74,31 +74,31 @@ module.exports = (sequelize, DataTypes) => {
   const {crypt} = require('../helpers/helper')
   User.beforeCreate((x,options) =>{
     const hash = crypt(x.dataValues.password);
-
+    let kebab = ''
     x.password = hash;
     switch (x.dataValues.username) {
       case 'cat':
-        x.username = faker.animal.cat()
+
+        x.username = faker.animal.cat().replace(/\s+|_+/g, '-')
         break;
       case 'dog':
-        x.username = faker.animal.dog()
+        x.username = faker.animal.dog().replace(/\s+|_+/g, '-')
         break;
       default:
-        x.username = faker.animal.insect()
+        x.username = faker.animal.insect().replace(/\s+|_+/g, '-')
         break;
     }
   })
   User.beforeUpdate((x,options) =>{
-    console.log("jalan >>>>>>>>>>>>");
     switch (x.dataValues.username) {
       case 'cat':
-        x.username = faker.animal.cat()
+        x.username = faker.animal.cat().replace(/\s+|_+/g, '-')
         break;
       case 'dog':
-        x.username = faker.animal.dog()
+        x.username = faker.animal.dog().replace(/\s+|_+/g, '-')
         break;
       default:
-        x.username = faker.animal.insect()
+        x.username = faker.animal.insect().replace(/\s+|_+/g, '-')
         break;
     }
   })
