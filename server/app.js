@@ -54,8 +54,13 @@ io.on('connection', (socket) => {
           }
         ]
       })
-
       socket.broadcast.emit("comment-new", comment)
+    } catch (error) {
+     console.log(error); 
+    }
+      
+  })
+      
       
   socket.on('new-vote', async()=>{
     try {
