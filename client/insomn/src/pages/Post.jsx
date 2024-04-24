@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentByPost, fetchOnePost, fetchAllCommentByPost } from "../store/features/post/Post";
+import {
+  fetchCommentByPost,
+  fetchOnePost,
+  fetchAllCommentByPost,
+} from "../store/features/post/Post";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../config";
 import socket from "../socket";
@@ -13,6 +17,7 @@ export default function Post() {
   const [addComment, setAddComment] = useState({
     content: "",
     CommentId: "",
+    author: "",
   });
 
   const changeHandler = (e) => {
@@ -23,10 +28,12 @@ export default function Post() {
     });
     console.log("update: ", addComment.CommentId);
   };
-  const quoteHandler = (id) => {
+  const quoteHandler = (id, author) => {
+    console.log("masuk boyyyyyyyyyyyyyyyyyy", author);
     setAddComment({
       ...addComment,
       CommentId: id,
+      author,
     });
   };
 
@@ -41,12 +48,13 @@ export default function Post() {
           authorization: "Bearer " + localStorage.access_token,
         },
       });
-
-
       socket.emit("new-comment", postId);
-
       dispatch(fetchCommentByPost(postId));
-
+      setAddComment({
+        content: "",
+        CommentId: "",
+        author: "",
+      });
     } catch (error) {
       console.log("ERROR GANNNN >>>>>>", error);
     }
@@ -97,7 +105,7 @@ export default function Post() {
                   {el.author} : {el.content}
                 </p>
                 <button
-                  onClick={() => quoteHandler(el.id)}
+                  onClick={() => quoteHandler(el.id, el.author)}
                   value={el.id}
                   name="CommentId"
                   className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -113,9 +121,9 @@ export default function Post() {
       <form className="max-w-sm mx-auto" onSubmit={submitHandler}>
         <label
           htmlFor="content"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
         >
-          Your reply
+          {addComment.author && `Quoting: ${addComment.author}`}
         </label>
         <textarea
           onChange={changeHandler}
