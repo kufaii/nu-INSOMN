@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategory } from "../store/features/post/Post";
 import { fetchUser } from "../store/features/user/User";
@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CategoryButton from "./CategoryButton";
 import FollowingCategoryButton from "./FollowingCategoryButton";
 import socket from "../socket";
+import { FetchCategoryContext } from "../contexts/FetchCategory";
 
 
 export default function SideBar() {
@@ -14,6 +15,7 @@ export default function SideBar() {
   let userData = useSelector((state) => state.user.data);
   let categoryData = useSelector((state) => state.user.followingCategory);
   let categories = useSelector((state) => state.post.category);
+  const newCategories = useContext(FetchCategoryContext)
 
   const handleLogout = () => {
     localStorage.clear()
@@ -22,13 +24,12 @@ export default function SideBar() {
     navigate('/login')
   };
 
-
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchCategory());
+    newCategories.ambilData()
   }, []);
 
-  return (
+  return ( 
     <>
       <button
         data-drawer-target="separator-sidebar"
@@ -119,7 +120,7 @@ export default function SideBar() {
               ))}
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categories.map((category) => {
+            {newCategories.cobacoba && newCategories.cobacoba.data.map((category) => {
               return <CategoryButton key={category.id} category={category} />;
             })}
           </ul>
