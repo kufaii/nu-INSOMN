@@ -7,6 +7,7 @@ import CategoryButton from "./CategoryButton";
 import FollowingCategoryButton from "./FollowingCategoryButton";
 import socket from "../socket";
 import { FetchCategoryContext } from "../contexts/FetchCategory";
+import image from "../assets/download.jpg";
 
 export default function SideBar() {
   const dispatch = useDispatch();
@@ -60,7 +61,13 @@ export default function SideBar() {
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <Link to="/home" className="flex items-center ps-2.5 mb-5">
-            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+            <img
+              src={image}
+              alt=""
+              className="w-8 h-8 mr-2 rounded-md transition duration-75"
+              aria-hidden="true"
+            />
+            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               INSOMN
             </span>
           </Link>
