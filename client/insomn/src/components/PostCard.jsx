@@ -3,9 +3,11 @@ import axios from "../config";
 import socket from "../socket";
 import { useDispatch } from "react-redux";
 import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
+import { useEffect, useState } from "react";
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
+  const [time, setTime] = useState(post.createdAt);
 
   const deleteHandler = async () => {
     await axios({
@@ -41,7 +43,22 @@ export default function PostCard({ post }) {
     }
   };
 
-  console.log(post.Category, "ini ada <<<<<<<<");
+  const timeFormat = () => {
+    const dateString = new Date(time);
+    const hours = dateString.getHours();
+    const minutes = dateString.getMinutes();
+    setTime(
+      `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`
+    );
+  };
+
+  // console.log(post.Category, "ini ada <<<<<<<<");
+
+  useEffect(() => {
+    timeFormat();
+  }, []);
 
   return (
     <>
@@ -59,7 +76,7 @@ export default function PostCard({ post }) {
         </div>
 
         <p className="font-normal text-gray-700 dark:text-gray-400">
-          Votes: {post.votes} Created at: {post.createdAt}
+          Votes: {post.votes} Created at: {time}
         </p>
       </Link>
 
