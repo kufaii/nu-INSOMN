@@ -1,7 +1,7 @@
-if(process.env.NODE_ENV !== "production"){
-    require('dotenv').config()
+if (process.env.NODE_ENV !== "production") {
+  require('dotenv').config()
 }
-const {User, Post, Comment, Category, Follow} = require('./models')
+const { User, Post, Comment, Category, Follow } = require('./models')
 
 const cors = require('cors');
 const express = require('express');
@@ -12,9 +12,9 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const { createServer } = require('http')
-const { Server } =  require("socket.io")
+const { Server } = require("socket.io")
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cors())
@@ -22,24 +22,47 @@ app.use(router)
 app.use(errorHandler)
 
 const httpServer = createServer(app)
-const io = new Server(httpServer,{
-  cors:{
+const io = new Server(httpServer, {
+  cors: {
     origin: "*"
   }
 })
-let useridddd = 0
-io.on('connection', (socket)=>{
-  console.log("access token >>>>>>>>>>>>>>>>>>",socket.handshake.auth.access_token);
 
-  socket.on("new-post", async ()=>{
+io.on('connection', (socket) => {
+  console.log("access token >>>>>>>>>>>>>>>>>>", socket.handshake.auth.access_token);
+
+  socket.on("new-post", async () => {
     try {
-      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
+      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
       socket.broadcast.emit("post-new", allPost)
     } catch (error) {
       console.log(error);
     }
   })
-  
+
+  socket.on("new-comment", async (PostId) => {
+    try {
+      const comment = await Comment.findAll({
+        where: {
+          PostId
+        },
+        include: [
+          {
+            model: Comment,
+            attributes: ['author', 'content'],
+            as: 'Quote'
+          }
+        ]
+      })
+
+      socket.broadcast.emit("comment-new", comment)
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
+
+
   // io.use(async (socket, next) => {
   //   if(!socket.handshake.auth.access_token) throw { name: "unauthenticated" }
 
@@ -54,8 +77,6 @@ io.on('connection', (socket)=>{
   //     });
   //     next();
 })
-
-
 
 
 // app.listen(port, () => {
