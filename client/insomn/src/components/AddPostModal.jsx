@@ -2,9 +2,14 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../config";
 import socket from "../socket";
-import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
+import {
+  fetchFollowingPost,
+  fetchPost,
+  fetchPostByCategory,
+} from "../store/features/post/Post";
 
-export default function AddPostModal() {
+export default function AddPostModal({ idCategory }) {
+  console.log(idCategory, "ID CATEGORYYYYYYYYYYYYYYYYYYYYY");
   const addCategories = useSelector((state) => state.post.category);
   const dispatch = useDispatch();
 
@@ -52,9 +57,10 @@ export default function AddPostModal() {
         },
       });
 
-      socket.emit("new-post");
+      socket.emit("new-post", idCategory);
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
+      // dispatch(fetchPostByCategory(3)); //belum dinamis
       handleModalToggle();
     } catch (error) {
       console.log("ERROR GANNN >>>>>>", error);

@@ -85,7 +85,7 @@ class Controller {
     }
     static async post(req, res, next) {
         try {
-            const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
+            const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], include: Category })
 
             res.status(200).json({
                 data: allPost
@@ -117,7 +117,7 @@ class Controller {
                         [Op.in]: followingId
                     }
                 },
-                order: [['votes', 'DESC']]
+                order: [['votes', 'DESC']], include: Category
             })
 
             res.status(200).json({

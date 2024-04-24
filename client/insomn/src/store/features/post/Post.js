@@ -48,6 +48,7 @@ export function fetchPost(){
                 }
             })
 
+            console.log(data, "DDDDDDDDDDDDaaaaaaaaaaaa")
             dispatch(fetchAllPost(data.data));
         } catch (error) {
             console.log("DUH ERROR GAN >>>>>>>>>>>>>>>",error);

@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPostByCategory } from "../store/features/post/Post";
+import {
+  fetchAllPostByCategory,
+  fetchPostByCategory,
+} from "../store/features/post/Post";
 import AddPostModal from "../components/AddPostModal";
 import PostCard from "../components/PostCard";
 import { Link, useParams } from "react-router-dom";
+import socket from "../socket";
 
 export default function PostPerCategory() {
   const idCategory = useParams().id;
@@ -11,8 +15,23 @@ export default function PostPerCategory() {
   const postPerCategory = useSelector((state) => state.post.postByCategory);
 
   useEffect(() => {
-    console.log("ini jalan >>>>>>>>>");
-    // dispatch(fetchPostByCategory(idCategory));
+    socket.auth = {
+      access_token: localStorage.access_token,
+    };
+
+    socket.connect();
+
+    socket.on("post-perCategory:new", (value) => {
+      console.log("test post2");
+      console.log(value, "ini value boyy");
+      dispatch(fetchAllPostByCategory(value));
+    });
+    socket.on("vote-perCategory:new", () => {
+      dispatch(fetchFollowingPost());
+    });
+
+    // dispatch(fetchFollowingPost());
+    dispatch(fetchPostByCategory(idCategory));
   }, []);
 
   return (
@@ -65,7 +84,7 @@ export default function PostPerCategory() {
         </table>
       </div>
 
-      <AddPostModal />
+      <AddPostModal idCategory={idCategory} />
     </>
   );
 }

@@ -8,28 +8,27 @@ import FollowingCategoryButton from "./FollowingCategoryButton";
 import socket from "../socket";
 import { FetchCategoryContext } from "../contexts/FetchCategory";
 
-
 export default function SideBar() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   let userData = useSelector((state) => state.user.data);
   let categoryData = useSelector((state) => state.user.followingCategory);
   let categories = useSelector((state) => state.post.category);
-  const newCategories = useContext(FetchCategoryContext)
+  const newCategories = useContext(FetchCategoryContext);
 
   const handleLogout = () => {
-    localStorage.clear()
-    socket.disconnect()
+    localStorage.clear();
+    socket.disconnect();
 
-    navigate('/login')
+    navigate("/login");
   };
 
   useEffect(() => {
     dispatch(fetchUser());
-    newCategories.ambilData()
+    newCategories.ambilData();
   }, []);
 
-  return ( 
+  return (
     <>
       <button
         data-drawer-target="separator-sidebar"
@@ -101,7 +100,8 @@ export default function SideBar() {
               </Link>
             </li>
             <li>
-              <button onClick={handleLogout}
+              <button
+                onClick={handleLogout}
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">Logout</span>
@@ -110,19 +110,17 @@ export default function SideBar() {
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
             {categoryData.length > 0 &&
-              categoryData.map((category) => (
+              categoryData.map((category, i) => (
                 <li>
-                  <FollowingCategoryButton
-                    key={category.id}
-                    category={category}
-                  />
+                  <FollowingCategoryButton key={i} category={category} />
                 </li>
               ))}
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {newCategories.cobacoba && newCategories.cobacoba.data.map((category) => {
-              return <CategoryButton key={category.id} category={category} />;
-            })}
+            {newCategories.cobacoba &&
+              newCategories.cobacoba.data.map((category) => {
+                return <CategoryButton key={category.id} category={category} />;
+              })}
           </ul>
         </div>
       </aside>
