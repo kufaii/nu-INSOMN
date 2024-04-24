@@ -1,4 +1,4 @@
-// const {Post} = require('../models')
+const {Post} = require('../models')
 
 async function godOnly(req, res, next){
     try {
@@ -17,4 +17,24 @@ async function godOnly(req, res, next){
     }
 }
 
-module.exports = {godOnly}
+async function authUserForAdmin(req,res,next){
+    try {
+        if(req.user.role == "god"){
+            return next()
+        }else{
+            const {id} = req.params
+            const post = await Post.findByPk(id)
+            console.log(post)
+
+            if(post.userId == req.user.id){
+                return next()
+            }else{
+                throw {name: "unauthorized"}
+            }
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = {godOnly,authUserForAdmin}
