@@ -8,19 +8,19 @@ import UserCard from "./UserCard";
 export default function AdditionalSideBar() {
   const dispatch = useDispatch();
   const topPost = useSelector((state) => state.post.top);
-  const [onlineUser, setOnlineUser] = useState([])
+  const [onlineUser, setOnlineUser] = useState([]);
 
   useEffect(() => {
     socket.on("online:users", (value) => {
-      setOnlineUser(value)
-      console.log(value, "daftar orang hilang")
-    })
+      setOnlineUser(value);
+      console.log(value, "daftar orang hilang");
+    });
 
     dispatch(fetchTop5Post());
 
     return () => {
-      socket.off("online:users")
-    }
+      socket.off("online:users");
+    };
   }, []);
 
   return (
@@ -53,10 +53,10 @@ export default function AdditionalSideBar() {
             </span>
           </p>
           <ul className="space-y-2 font-medium">
-            {onlineUser.map((el) => {
+            {onlineUser.map((el, i) => {
               return (
                 <li>
-                  <UserCard key={el.id} user={el} />
+                  <UserCard key={i} user={el} />
                 </li>
               );
             })}
