@@ -43,7 +43,7 @@ io.on('connection', (socket)=>{
   socket.on('new-vote', async()=>{
     try {
       const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
-      socket.broadcast.emit("post-new", allPost)
+      socket.broadcast.emit("vote-new", allPost)
     } catch (error) {
       console.log(error);
     }

@@ -18,6 +18,9 @@ export default function Home() {
     socket.on("post-new", (value) => {
       dispatch(fetchAllPost(value));
     });
+    socket.on("vote-new", (value) => {
+      dispatch(fetchAllPost(value));
+    });
 
     dispatch(fetchPost());
   }, []);

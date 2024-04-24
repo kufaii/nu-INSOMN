@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "../config";
 
 export default function Post() {
-  const navigate = useNavigate();
   const postId = useParams().id;
   const dispatch = useDispatch();
   const postById = useSelector((state) => state.post.dataById);
@@ -42,7 +41,7 @@ export default function Post() {
         },
       });
 
-      navigate(`/redirect/post/${postId}`);
+      dispatch(fetchCommentByPost(postId));
     } catch (error) {
       console.log("ERROR GANNNN >>>>>>", error);
     }

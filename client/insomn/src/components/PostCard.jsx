@@ -1,10 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "../config";
-import { useState } from "react";
 import socket from "../socket";
+import { useDispatch } from "react-redux";
+import { fetchPost } from "../store/features/post/Post";
 
 export default function PostCard({ post }) {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const voteHandler = async (e) => {
     try {
       await axios({
@@ -19,7 +21,7 @@ export default function PostCard({ post }) {
       });
 
       socket.emit("new-vote");
-      navigate("/redirect/home");
+      dispatch(fetchPost());
     } catch (error) {
       console.log(error);
     }
@@ -27,7 +29,7 @@ export default function PostCard({ post }) {
   return (
     <>
       <Link
-        to={`/redirect/post/${post.id}`}
+        to={`/post/${post.id}`}
         className="block w-100 p-6 bg-white  rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700"
       >
         <div className="">

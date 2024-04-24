@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../config";
-import { useNavigate } from "react-router-dom";
 import socket from "../socket";
+import { fetchPost } from "../store/features/post/Post";
 
 export default function AddPostModal() {
-  const userAddPost = useSelector((state) => state.user.data);
   const addCategories = useSelector((state) => state.post.category);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentContent, setCommentContent] = useState({
@@ -56,14 +54,15 @@ export default function AddPostModal() {
       });
 
       socket.emit("new-post");
-
-      navigate("/redirect/home");
+      dispatch(fetchPost());
+      handleModalToggle();
     } catch (error) {
       console.log("ERROR GANNN >>>>>>", error);
     }
   };
 
   const handleModalToggle = () => {
+    console.log("ketrigere>>>>>>>>>>>>");
     setIsModalOpen(!isModalOpen);
   };
 
