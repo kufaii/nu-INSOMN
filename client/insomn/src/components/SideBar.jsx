@@ -4,6 +4,7 @@ import { fetchCategory } from "../store/features/post/Post";
 import { fetchUser } from "../store/features/user/User";
 import { Link } from "react-router-dom";
 import CategoryButton from "./CategoryButton";
+import FollowingCategoryButton from "./FollowingCategoryButton";
 
 export default function SideBar() {
   const dispatch = useDispatch();
@@ -97,10 +98,13 @@ export default function SideBar() {
             </li>
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categoryData.length > 1 &&
+            {categoryData.length > 0 &&
               categoryData.map((category) => (
                 <li>
-                  <CategoryButton key={category.id} category={category} />
+                  <FollowingCategoryButton
+                    key={category.id}
+                    category={category}
+                  />
                 </li>
               ))}
           </ul>
