@@ -33,12 +33,15 @@ export default function PostCard({ post }) {
       });
 
       socket.emit("new-vote");
+      dispatch(fetchPostByCategory(post.Category.id));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log(post.Category, "ini ada <<<<<<<<");
 
   return (
     <>

@@ -108,7 +108,7 @@ io.on('connection', (socket) => {
       //     order:[['votes', 'DESC']], include: Category
       // })
       // console.log("ini data ?>>>>>>>", allFollowingPost);
-      socket.broadcast.emit("vote-following:new")
+      socket.emit("vote-following:new")
     } catch (error) {
       console.log(error);
     }
@@ -124,38 +124,38 @@ io.on('connection', (socket) => {
       //untuk halaman home-following
       let followingId = []
       const token = socket.handshake.auth.access_token
-      const payload = verifyToken(token)
-      const {id} = payload
-      const user = await User.findByPk(id,{
-          attributes: ['id', 'username'],
-          include:[
-              {
-                  model: Category,
-                  through: 'Follows',
-                  attributes: ['id', 'name']
-              }
-          ]
-      })
-      user.Categories.map(el => followingId.push(el.id))
+      // console.log("ini token >>>>>>>>>>>>>>>>>>>", token);
+      // console.log("sebelum verify jalan >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      // const payload = verifyToken(token)
+      // console.log("sesudah verify jalan >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      // const {id} = payload
+      // const user = await User.findByPk(id,{
+      //     attributes: ['id', 'username'],
+      //     include:[
+      //         {
+      //             model: Category,
+      //             through: 'Follows',
+      //             attributes: ['id', 'name']
+      //         }
+      //     ]
+      // })
+      // user.Categories.map(el => followingId.push(el.id))
 
-      const allFollowingPost = await Post.findAll({
-          attributes: { exclude: ['UserId'] },
-          where:{
-              CategoryId:{
-                  [Op.in]: followingId
-              }
-          },
-          order:[['votes', 'DESC']], include: Category
-      })
+      // const allFollowingPost = await Post.findAll({
+      //     attributes: { exclude: ['UserId'] },
+      //     where:{
+      //         CategoryId:{
+      //             [Op.in]: followingId
+      //         }
+      //     },
+      //     order:[['votes', 'DESC']], include: Category
+      // })
 
-      socket.broadcast.emit("post-following:new", allFollowingPost)
+      // socket.broadcast.emit("post-following:new", allFollowingPost)
+      socket.broadcast.emit("post-following:new")
 
       //untuk halaman PostPerCategory
-      if(idCategory) {
-        const postPerCategory = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], where: { CategoryId: idCategory } })
-        console.log(postPerCategory, "nih brooooooo")
-        socket.broadcast.emit("post-perCategory:new", postPerCategory)
-      }
+        socket.broadcast.emit("post-perCategory:new")
     } catch (error) {
       console.log(error, 'lkjlkjlkjlkjlkjlkjlkjlk');
     }

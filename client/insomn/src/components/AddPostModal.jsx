@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../config";
 import socket from "../socket";
@@ -7,11 +7,13 @@ import {
   fetchPost,
   fetchPostByCategory,
 } from "../store/features/post/Post";
+import { FetchCategoryContext } from "../contexts/FetchCategory";
 
 export default function AddPostModal({ idCategory }) {
   console.log(idCategory, "ID CATEGORYYYYYYYYYYYYYYYYYYYYY");
   const addCategories = useSelector((state) => state.post.category);
   const dispatch = useDispatch();
+  const newCategories = useContext(FetchCategoryContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentContent, setCommentContent] = useState({
@@ -56,6 +58,10 @@ export default function AddPostModal({ idCategory }) {
           authorization: "Bearer " + localStorage.access_token,
         },
       });
+
+      socket.auth = {
+        access_token: localStorage.access_token,
+      };
 
       socket.emit("new-post", idCategory);
       dispatch(fetchPost());
@@ -169,11 +175,12 @@ export default function AddPostModal({ idCategory }) {
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     >
                       <option defaultValue="">Select category</option>
-                      {addCategories.map((el) => (
-                        <option value={el.id} key={el.id}>
-                          {el.name}
-                        </option>
-                      ))}
+                      {newCategories.cobacoba &&
+                        newCategories.cobacoba.data.map((el) => (
+                          <option value={el.id} key={el.id}>
+                            {el.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>

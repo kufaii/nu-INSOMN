@@ -21,13 +21,11 @@ export default function PostPerCategory() {
 
     socket.connect();
 
-    socket.on("post-perCategory:new", (value) => {
-      console.log("test post2");
-      console.log(value, "ini value boyy");
-      dispatch(fetchAllPostByCategory(value));
+    socket.on("post-perCategory:new", () => {
+      dispatch(fetchPostByCategory(idCategory));
     });
-    socket.on("vote-perCategory:new", () => {
-      dispatch(fetchFollowingPost());
+    socket.on("vote-following:new", () => {
+      dispatch(fetchPostByCategory(idCategory));
     });
 
     // dispatch(fetchFollowingPost());
