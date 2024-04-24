@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import axios from "../config";
 import socket from "../socket";
 import { useDispatch } from "react-redux";
-import { fetchPost } from "../store/features/post/Post";
+import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
@@ -34,6 +34,7 @@ export default function PostCard({ post }) {
 
       socket.emit("new-vote");
       dispatch(fetchPost());
+      dispatch(fetchFollowingPost());
     } catch (error) {
       console.log(error);
     }

@@ -108,7 +108,6 @@ class Controller {
                     }
                 ]
             })
-            console.log("ini user >>>>>>>", user);
             user.Categories.map(el => followingId.push(el.id))
 
             const allPost = await Post.findAll({
