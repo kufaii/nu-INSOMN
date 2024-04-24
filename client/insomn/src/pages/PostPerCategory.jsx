@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPostByCategory } from "../store/features/post/Post";
 import AddPostModal from "../components/AddPostModal";
 import PostCard from "../components/PostCard";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function PostPerCategory() {
-  const navigate = useNavigate();
   const idCategory = useParams().id;
   const dispatch = useDispatch();
   const postPerCategory = useSelector((state) => state.post.postByCategory);
 
   useEffect(() => {
-    dispatch(fetchPostByCategory(idCategory));
+    console.log("ini jalan >>>>>>>>>");
+    // dispatch(fetchPostByCategory(idCategory));
   }, []);
 
   return (
@@ -56,7 +56,6 @@ export default function PostPerCategory() {
               <>
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td className="px-6 py-4">
-                    {console.log("el >>>>", el)}
                     <PostCard key={el.id} post={el} />
                   </td>
                 </tr>

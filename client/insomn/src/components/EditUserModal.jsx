@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "../config";
-import { useNavigate } from "react-router-dom";
+import { fetchUser } from "../store/features/user/User";
 
 export default function EditUserModal() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.user.data);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,8 +31,8 @@ export default function EditUserModal() {
           authorization: "Bearer " + localStorage.access_token,
         },
       });
-
-      navigate("/redirect/profile");
+      dispatch(fetchUser());
+      setIsModalOpen(!isModalOpen);
     } catch (error) {
       console.log("ERROR GANNN >>>>>>", error);
     }

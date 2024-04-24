@@ -6,7 +6,6 @@ import axios from "../config";
 import socket from "../socket";
 
 export default function Post() {
-  const navigate = useNavigate();
   const postId = useParams().id;
   const dispatch = useDispatch();
   const postById = useSelector((state) => state.post.dataById);
@@ -43,9 +42,11 @@ export default function Post() {
         },
       });
 
+
       socket.emit("new-comment", postId);
 
-      navigate(`/redirect/post/${postId}`);
+      dispatch(fetchCommentByPost(postId));
+
     } catch (error) {
       console.log("ERROR GANNNN >>>>>>", error);
     }
