@@ -26,7 +26,7 @@ export default function SideBar() {
 
   useEffect(() => {
     dispatch(fetchUser());
-    categories.ambilData()
+    newCategories.ambilData()
   }, []);
 
   return ( 
