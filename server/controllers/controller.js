@@ -152,6 +152,7 @@ class Controller {
     static async addPost(req, res, next) {
         try {
             const { title, CategoryId } = req.body
+
             const UserId = req.user.id
             const newPost = await Post.create({
                 title,

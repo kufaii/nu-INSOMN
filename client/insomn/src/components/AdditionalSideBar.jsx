@@ -27,7 +27,7 @@ export default function AdditionalSideBar() {
     <>
       <aside
         id="separator-sidebar"
-        className="xl:block hidden fixed top-0 right-0 z-40 w-96 h-screen bg-gray-50 dark:bg-gray-800 transform translate-x-full sm:translate-x-0 transition-transform ease-in-out duration-300"
+        className="xl:block hidden fixed top-0 right-0 z-40 w-96 h-screen bg-gray-100 dark:bg-gray-800 transform translate-x-full sm:translate-x-0 transition-transform ease-in-out duration-300"
         aria-label="Sidebar"
       >
         <div className="h-1/2 px-3 py-4 overflow-y-auto">
