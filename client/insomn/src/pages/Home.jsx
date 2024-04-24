@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.auth = {
-      access_token: localStorage.access_token,
+      username: localStorage.username
     };
     socket.connect();
     socket.on("post-new", (value) => {
@@ -23,6 +23,11 @@ export default function Home() {
     });
 
     dispatch(fetchPost());
+
+    return () => {
+      socket.off("post-new")
+      socket.off("vote-new")
+    }
   }, []);
 
   return (

@@ -9,6 +9,7 @@ export default function User() {
   useEffect(() => {
     dispatch(fetchUser());
   }, []);
+
   return (
     <>
       <p>{userData.username}</p>
