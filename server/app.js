@@ -39,6 +39,15 @@ io.on('connection', (socket)=>{
       console.log(error);
     }
   })
+
+  socket.on('new-vote', async()=>{
+    try {
+      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
+      socket.broadcast.emit("post-new", allPost)
+    } catch (error) {
+      console.log(error);
+    }
+  })
   
   // io.use(async (socket, next) => {
   //   if(!socket.handshake.auth.access_token) throw { name: "unauthenticated" }
