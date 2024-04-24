@@ -4,7 +4,7 @@ import { fetchPostByCategory } from "../store/features/post/Post";
 import axios from "../config";
 import { fetchUser } from "../store/features/user/User";
 
-export default function CategoryButton({ category }) {
+export default function FollowingCategoryButton({ category }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -13,11 +13,10 @@ export default function CategoryButton({ category }) {
     navigate(`/category/post/${category.id}`);
   };
 
-  const follow = async () => {
+  const unfollow = async () => {
     try {
-      console.log("ini kategori id", category.id);
       await axios({
-        method: "post",
+        method: "delete",
         url: `/category/${category.id}/follow`,
         headers: {
           authorization: `Bearer ${localStorage.access_token}`,
@@ -39,11 +38,11 @@ export default function CategoryButton({ category }) {
           {category.name}
         </button>
         <button
-          onClick={follow}
+          onClick={unfollow}
           type="button"
           className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
         >
-          +
+          -
         </button>
       </div>
     </>
