@@ -28,8 +28,19 @@ const io = new Server(httpServer, {
   }
 })
 
+let onlineUser = []
+
 io.on('connection', (socket) => {
-  console.log("access token >>>>>>>>>>>>>>>>>>", socket.handshake.auth.access_token);
+
+  const currentUser = socket.handshake.auth.username;
+
+  if (!onlineUser.includes(currentUser) && currentUser) {
+    onlineUser.push({ username: currentUser });
+  }
+
+  console.log(currentUser, "current user brooo")
+
+  io.emit("online:users", onlineUser)
 
   socket.on("new-post", async () => {
     try {
@@ -56,35 +67,42 @@ io.on('connection', (socket) => {
       })
       socket.broadcast.emit("comment-new", comment)
     } catch (error) {
-     console.log(error); 
+      console.log(error);
     }
-      
+
   })
-      
-      
-  socket.on('new-vote', async()=>{
+
+
+  socket.on('new-vote', async () => {
     try {
-      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
+      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
       socket.broadcast.emit("vote-new", allPost)
     } catch (error) {
       console.log(error);
     }
   })
 
-      // io.use(async (socket, next) => {
-  //   if(!socket.handshake.auth.access_token) throw { name: "unauthenticated" }
+  socket.on("disconnect", () => {
+    onlineUser = onlineUser.filter(user => user.username != currentUser)
+    io.emit("online:users", onlineUser)
+  })
 
-  //       const token = socket.handshake.auth.access_token
-
-  //       const payload = verifyToken(token)
-
-  //       const findUser = await User.findByPk(payload.id)
-  //       if(!findUser) throw { name: "unauthenticated" }
-
-  //       useridddd = payload.id
-  //     });
-  //     next();
+  // console.log(onlineUser, "Nowwwwwwwwwwwwwww")
 })
+
+// io.use(async (socket, next) => {
+//   if(!socket.handshake.auth.access_token) throw { name: "unauthenticated" }
+
+//       const token = socket.handshake.auth.access_token
+
+//       const payload = verifyToken(token)
+
+//       const findUser = await User.findByPk(payload.id)
+//       if(!findUser) throw { name: "unauthenticated" }
+
+//       useridddd = payload.id
+//     });
+//     next();
 
 
 // app.listen(port, () => {

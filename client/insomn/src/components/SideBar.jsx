@@ -2,15 +2,26 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategory } from "../store/features/post/Post";
 import { fetchUser } from "../store/features/user/User";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CategoryButton from "./CategoryButton";
 import FollowingCategoryButton from "./FollowingCategoryButton";
+import socket from "../socket";
+
 
 export default function SideBar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   let userData = useSelector((state) => state.user.data);
   let categoryData = useSelector((state) => state.user.followingCategory);
   let categories = useSelector((state) => state.post.category);
+
+  const handleLogout = () => {
+    localStorage.clear()
+    socket.disconnect()
+
+    navigate('/login')
+  };
+
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -89,12 +100,11 @@ export default function SideBar() {
               </Link>
             </li>
             <li>
-              <Link
-                to="/logout"
+              <button onClick={handleLogout}
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <span className="flex-1 ms-3 whitespace-nowrap">Logout</span>
-              </Link>
+              </button>
             </li>
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">

@@ -27,8 +27,9 @@ export default function Login({}) {
         url: "/login",
         data: credential,
       });
-      console.log(">>>>>>>>>>>>>>>>>>>", data);
-      localStorage.access_token = data.data;
+      // console.log(">>>>>>>>>>>>>>>>>>>", data);
+      localStorage.access_token = data.data.access_token;
+      localStorage.username = data.data.username;
 
       navigate("/home");
     } catch (error) {
