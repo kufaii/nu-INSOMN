@@ -44,14 +44,14 @@ io.on('connection', (socket) => {
 
   io.emit("online:users", onlineUser)
 
-  socket.on("new-post", async () => {
-    try {
-      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
-      socket.broadcast.emit("post-new", allPost)
-    } catch (error) {
-      console.log(error);
-    }
-  })
+  // socket.on("new-post", async () => {
+  //   try {
+  //     const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], include: Category })
+  //     socket.broadcast.emit("post-new", allPost)
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // })
 
   socket.on("new-comment", async (PostId) => {
     try {
@@ -75,48 +75,50 @@ io.on('connection', (socket) => {
   })
 
 
-  socket.on('new-vote', async () => {
+  socket.on('new-vote', async (idCategory) => {
     try {
       //untuk halaman home
-      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
+      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']], include: Category})
       socket.broadcast.emit("vote-new", allPost)
 
       //untuk halaman home-following
-      let followingId = []
-      const token = socket.handshake.auth.access_token
-      const payload = verifyToken(token)
-      const {id} = payload
-            const user = await User.findByPk(id,{
-                attributes: ['id', 'username'],
-                include:[
-                    {
-                        model: Category,
-                        through: 'Follows',
-                        attributes: ['id', 'name']
-                    }
-                ]
-            })
-      user.Categories.map(el => followingId.push(el.id))
+      // let followingId = []
+      // const token = socket.handshake.auth.access_token
+      // const payload = verifyToken(token)
+      // const {id} = payload
+      // const user = await User.findByPk(id,{
+      //     attributes: ['id', 'username'],
+      //     include:[
+      //         {
+      //             model: Category,
+      //             through: 'Follows',
+      //             attributes: ['id', 'name']
+      //         }
+      //     ]
+      // })
+      // user.Categories.map(el => followingId.push(el.id))
 
-      const allFollowingPost = await Post.findAll({
-          attributes: { exclude: ['UserId'] },
-          where:{
-              CategoryId:{
-                  [Op.in]: followingId
-              }
-          },
-          order:[['votes', 'DESC']]
-      })
-      socket.broadcast.emit("vote-following:new", allFollowingPost)
+      // const allFollowingPost = await Post.findAll({
+      //     attributes: { exclude: ['UserId'] },
+      //     where:{
+      //         CategoryId:{
+      //             [Op.in]: followingId
+      //         }
+      //     },
+      //     order:[['votes', 'DESC']], include: Category
+      // })
+      // console.log("ini data ?>>>>>>>", allFollowingPost);
+      socket.broadcast.emit("vote-following:new")
     } catch (error) {
       console.log(error);
     }
   })
 
-  socket.on("new-post", async () => {
+  socket.on("new-post", async (idCategory) => {
     try {
+      console.log(idCategory, "id category geng")
       //untuk halaman home
-      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
+      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], include: Category })
       socket.broadcast.emit("post-new", allPost)
 
       //untuk halaman home-following
@@ -143,12 +145,19 @@ io.on('connection', (socket) => {
                   [Op.in]: followingId
               }
           },
-          order:[['votes', 'DESC']]
+          order:[['votes', 'DESC']], include: Category
       })
 
       socket.broadcast.emit("post-following:new", allFollowingPost)
+
+      //untuk halaman PostPerCategory
+      if(idCategory) {
+        const postPerCategory = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], where: { CategoryId: idCategory } })
+        console.log(postPerCategory, "nih brooooooo")
+        socket.broadcast.emit("post-perCategory:new", postPerCategory)
+      }
     } catch (error) {
-      console.log(error);
+      console.log(error, 'lkjlkjlkjlkjlkjlkjlkjlk');
     }
   })
 
