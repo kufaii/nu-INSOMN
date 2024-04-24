@@ -72,6 +72,7 @@ class Controller{
     }
     static async register(req, res, next){
         try {
+            console.log(req.body);
             // const {email, password, username} = req.body
             const newUser = await User.create(req.body)
             delete newUser.dataValues.password
