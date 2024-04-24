@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentByPost, fetchOnePost } from "../store/features/post/Post";
+import { fetchCommentByPost, fetchOnePost, fetchAllCommentByPost } from "../store/features/post/Post";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../config";
+import socket from "../socket";
 
 export default function Post() {
   const navigate = useNavigate();
@@ -42,6 +43,8 @@ export default function Post() {
         },
       });
 
+      socket.emit("new-comment", postId);
+
       navigate(`/redirect/post/${postId}`);
     } catch (error) {
       console.log("ERROR GANNNN >>>>>>", error);
@@ -49,6 +52,12 @@ export default function Post() {
   };
 
   useEffect(() => {
+    socket.connect();
+
+    socket.on("comment-new", (value) => {
+      dispatch(fetchAllCommentByPost(value));
+    });
+
     dispatch(fetchOnePost(postId));
     dispatch(fetchCommentByPost(postId));
   }, []);

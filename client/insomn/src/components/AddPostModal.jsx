@@ -84,9 +84,8 @@ export default function AddPostModal() {
           id="crud-modal"
           tabIndex="-1"
           aria-hidden="true"
-          className={`${
-            isModalOpen ? "block" : "hidden"
-          } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 bg-zinc-500/50 flex justify-center w-full md:inset-0 h-full max-h-full`}
+          className={`${isModalOpen ? "block" : "hidden"
+            } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 bg-zinc-500/50 flex justify-center w-full md:inset-0 h-full max-h-full`}
         >
           <div className="relative grid content-center p-4 w-full max-w-md max-h-full">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
