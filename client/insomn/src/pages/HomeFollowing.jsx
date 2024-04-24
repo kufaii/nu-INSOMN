@@ -19,8 +19,8 @@ export default function HomeFollowing() {
     };
     socket.connect();
 
-    socket.on("post-following:new", (value) => {
-      dispatch(fetchAllFollowingPost(value));
+    socket.on("post-following:new", () => {
+      dispatch(fetchFollowingPost());
     });
     socket.on("vote-following:new", () => {
       dispatch(fetchFollowingPost());

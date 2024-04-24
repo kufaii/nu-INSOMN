@@ -203,7 +203,7 @@ class Controller {
     }
     static async postCategory(req, res, next) {
         try {
-            const postPerCategory = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], where: { CategoryId: req.params.id } })
+            const postPerCategory = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], where: { CategoryId: req.params.id }, include: Category })
 
             res.status(200).json({
                 data: postPerCategory
