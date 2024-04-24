@@ -3,20 +3,12 @@ import axios from "../config";
 import socket from "../socket";
 import { useDispatch } from "react-redux";
 import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
-<<<<<<< HEAD
 import { useEffect, useState } from "react";
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
   const [time, setTime] = useState(post.createdAt);
-=======
-import { useState } from "react";
-// import { BiLike } from "react-icons/bi";
-
-export default function PostCard({ post }) {
-  const dispatch = useDispatch();
   const [alreadyVote, setAlreadyVote] = useState(false)
->>>>>>> 075c617 (style: edit style)
 
   const deleteHandler = async () => {
     try {
@@ -52,11 +44,8 @@ export default function PostCard({ post }) {
       }
 
       socket.emit("new-vote");
-<<<<<<< HEAD
-      dispatch(fetchPostByCategory(post.Category.id));
-=======
       setAlreadyVote(!alreadyVote)
->>>>>>> 075c617 (style: edit style)
+      dispatch(fetchPostByCategory(post.Category.id));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
     } catch (error) {
