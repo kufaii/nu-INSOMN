@@ -1,15 +1,31 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFollowingPost } from "../store/features/post/Post";
+import {
+  fetchAllFollowingPost,
+  fetchFollowingPost,
+} from "../store/features/post/Post";
 import AddPostModal from "../components/AddPostModal";
 import PostCard from "../components/PostCard";
 import { Link } from "react-router-dom";
+import socket from "../socket";
 
 export default function HomeFollowing() {
   const dispatch = useDispatch();
   const followingPost = useSelector((state) => state.post.following);
 
   useEffect(() => {
+    socket.auth = {
+      access_token: localStorage.access_token,
+    };
+    socket.connect();
+
+    socket.on("post-following:new", (value) => {
+      dispatch(fetchAllFollowingPost(value));
+    });
+    socket.on("vote-following:new", (value) => {
+      dispatch(fetchAllFollowingPost(value));
+    });
+
     dispatch(fetchFollowingPost());
   }, []);
 

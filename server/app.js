@@ -2,6 +2,7 @@ if (process.env.NODE_ENV !== "production") {
   require('dotenv').config()
 }
 const { User, Post, Comment, Category, Follow } = require('./models')
+const { Op } = require('sequelize')
 
 const cors = require('cors');
 const express = require('express');
@@ -12,7 +13,8 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const { createServer } = require('http')
-const { Server } = require("socket.io")
+const { Server } = require("socket.io");
+const { verifyToken } = require('./helpers/helper');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -75,8 +77,76 @@ io.on('connection', (socket) => {
 
   socket.on('new-vote', async () => {
     try {
-      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
+      //untuk halaman home
+      const allPost = await Post.findAll({attributes: { exclude: ['UserId'] }, order:[['votes', 'DESC']]})
       socket.broadcast.emit("vote-new", allPost)
+
+      //untuk halaman home-following
+      let followingId = []
+      const token = socket.handshake.auth.access_token
+      const payload = verifyToken(token)
+      const {id} = payload
+            const user = await User.findByPk(id,{
+                attributes: ['id', 'username'],
+                include:[
+                    {
+                        model: Category,
+                        through: 'Follows',
+                        attributes: ['id', 'name']
+                    }
+                ]
+            })
+      user.Categories.map(el => followingId.push(el.id))
+
+      const allFollowingPost = await Post.findAll({
+          attributes: { exclude: ['UserId'] },
+          where:{
+              CategoryId:{
+                  [Op.in]: followingId
+              }
+          },
+          order:[['votes', 'DESC']]
+      })
+      socket.broadcast.emit("vote-following:new", allFollowingPost)
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
+  socket.on("new-post", async () => {
+    try {
+      //untuk halaman home
+      const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']] })
+      socket.broadcast.emit("post-new", allPost)
+
+      //untuk halaman home-following
+      let followingId = []
+      const token = socket.handshake.auth.access_token
+      const payload = verifyToken(token)
+      const {id} = payload
+      const user = await User.findByPk(id,{
+          attributes: ['id', 'username'],
+          include:[
+              {
+                  model: Category,
+                  through: 'Follows',
+                  attributes: ['id', 'name']
+              }
+          ]
+      })
+      user.Categories.map(el => followingId.push(el.id))
+
+      const allFollowingPost = await Post.findAll({
+          attributes: { exclude: ['UserId'] },
+          where:{
+              CategoryId:{
+                  [Op.in]: followingId
+              }
+          },
+          order:[['votes', 'DESC']]
+      })
+
+      socket.broadcast.emit("post-following:new", allFollowingPost)
     } catch (error) {
       console.log(error);
     }
