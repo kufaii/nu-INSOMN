@@ -108,7 +108,7 @@ export default function SideBar() {
             </li>
           </ul>
           <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categoryData.length > 0 &&
+          {categoryData.length > 0 &&
               categoryData.map((category) => (
                 <li>
                   <FollowingCategoryButton

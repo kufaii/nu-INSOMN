@@ -34,8 +34,8 @@ io.on('connection', (socket) => {
 
   const currentUser = socket.handshake.auth.username;
 
-  if (!onlineUser.includes(currentUser) && currentUser) {
-    onlineUser.push({ username: currentUser });
+  if (!onlineUser.includes(currentUser)) {
+    onlineUser.push(currentUser);
   }
 
   console.log(currentUser, "current user brooo")
@@ -83,11 +83,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on("disconnect", () => {
-    onlineUser = onlineUser.filter(user => user.username != currentUser)
+    onlineUser = onlineUser.filter(user => user != currentUser)
     io.emit("online:users", onlineUser)
   })
 
-  // console.log(onlineUser, "Nowwwwwwwwwwwwwww")
+  console.log(onlineUser, "Nowwwwwwwwwwwwwww")
 })
 
 // io.use(async (socket, next) => {

@@ -53,10 +53,10 @@ export default function AdditionalSideBar() {
             </span>
           </p>
           <ul className="space-y-2 font-medium">
-            {onlineUser.map((el) => {
+            {onlineUser.map((el, i) => {
               return (
                 <li>
-                  <UserCard key={el.id} user={el} />
+                  <UserCard key={i} user={el} />
                 </li>
               );
             })}

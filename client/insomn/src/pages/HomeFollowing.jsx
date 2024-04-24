@@ -10,6 +10,7 @@ export default function HomeFollowing() {
   const followingPost = useSelector((state) => state.post.following);
 
   useEffect(() => {
+    
     dispatch(fetchFollowingPost());
   }, []);
 

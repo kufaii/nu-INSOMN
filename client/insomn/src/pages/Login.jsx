@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login({}) {
+export default function Login({ }) {
   const navigate = useNavigate();
   const [image, setImage] = useState([]);
   const [credential, setCredential] = useState({
@@ -146,7 +146,9 @@ export default function Login({}) {
                 Submit
               </button>
             </form>
+            <div className="flex justify-center items-center">
             <div id="buttonDiv"></div>
+            </div>
             <div className="mt-4 text-sm text-slate-400 text-center mt-10">
               <p>
                 Hast thou not an account?{" "}
