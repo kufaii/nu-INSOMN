@@ -1,15 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPost } from "../store/features/post/Post";
+import { fetchAllPost, fetchPost } from "../store/features/post/Post";
 import AddPostModal from "../components/AddPostModal";
 import PostCard from "../components/PostCard";
 import { Link } from "react-router-dom";
+import socket from "../socket";
 
 export default function Home() {
   const dispatch = useDispatch();
   const allPost = useSelector((state) => state.post.data);
 
   useEffect(() => {
+    socket.auth = {
+      access_token: localStorage.access_token,
+    };
+    socket.connect();
+    socket.on("post-new", (value) => {
+      dispatch(fetchAllPost(value));
+    });
+
     dispatch(fetchPost());
   }, []);
 

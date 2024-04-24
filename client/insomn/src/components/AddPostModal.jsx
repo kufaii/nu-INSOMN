@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../config";
 import { useNavigate } from "react-router-dom";
+import socket from "../socket";
 
 export default function AddPostModal() {
   const userAddPost = useSelector((state) => state.user.data);
@@ -53,6 +54,8 @@ export default function AddPostModal() {
           authorization: "Bearer " + localStorage.access_token,
         },
       });
+
+      socket.emit("new-post");
 
       navigate("/redirect/home");
     } catch (error) {
