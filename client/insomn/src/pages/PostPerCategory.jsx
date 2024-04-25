@@ -36,20 +36,23 @@ export default function PostPerCategory() {
     <>
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 fixed top-0 left-0 w-full z-20">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
             <tr>
-              <td scope="col" className="bg-white dark:bg-gray-900 w-full border-b border-gray-200 dark:border-gray-600">
+              <td
+                scope="col"
+                className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600"
+              >
                 <div className="w-100 flex flex-wrap items-center justify-between mx-auto p-4">
                   <Link
                     to="/home"
-                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white rounded bg-transparent md:p-0"
+                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white  rounded bg-transparent md:p-0 "
                     aria-current="page"
                   >
                     Home
                   </Link>
                   <Link
                     to="/home/following"
-                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white rounded bg-transparent md:p-0"
+                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white rounded bg-transparent md:p-0 "
                     aria-current="page"
                   >
                     Following

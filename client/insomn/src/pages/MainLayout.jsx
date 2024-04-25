@@ -3,7 +3,6 @@ import SideBar from "../components/SideBar";
 import AdditionalSideBar from "../components/AdditionalSideBar";
 
 export default function MainLayout() {
-
   return (
     <>
       <SideBar />
@@ -14,5 +13,3 @@ export default function MainLayout() {
     </>
   );
 }
-
-
