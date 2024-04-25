@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentByPost, fetchOnePost } from "../store/features/post/Post";
+import {
+  fetchCommentByPost,
+  fetchOnePost,
+  fetchAllCommentByPost,
+} from "../store/features/post/Post";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../config";
+import socket from "../socket";
 
 export default function Post() {
-  const navigate = useNavigate();
   const postId = useParams().id;
   const dispatch = useDispatch();
   const postById = useSelector((state) => state.post.dataById);
@@ -13,6 +17,7 @@ export default function Post() {
   const [addComment, setAddComment] = useState({
     content: "",
     CommentId: "",
+    author: "",
   });
 
   const changeHandler = (e) => {
@@ -23,10 +28,12 @@ export default function Post() {
     });
     console.log("update: ", addComment.CommentId);
   };
-  const quoteHandler = (id) => {
+  const quoteHandler = (id, author) => {
+    console.log("masuk boyyyyyyyyyyyyyyyyyy", author);
     setAddComment({
       ...addComment,
       CommentId: id,
+      author,
     });
   };
 
@@ -41,14 +48,25 @@ export default function Post() {
           authorization: "Bearer " + localStorage.access_token,
         },
       });
-
-      navigate(`/redirect/post/${postId}`);
+      socket.emit("new-comment", postId);
+      dispatch(fetchCommentByPost(postId));
+      setAddComment({
+        content: "",
+        CommentId: "",
+        author: "",
+      });
     } catch (error) {
       console.log("ERROR GANNNN >>>>>>", error);
     }
   };
 
   useEffect(() => {
+    socket.connect();
+
+    socket.on("comment-new", (value) => {
+      dispatch(fetchAllCommentByPost(value));
+    });
+
     dispatch(fetchOnePost(postId));
     dispatch(fetchCommentByPost(postId));
   }, []);
@@ -87,7 +105,7 @@ export default function Post() {
                   {el.author} : {el.content}
                 </p>
                 <button
-                  onClick={() => quoteHandler(el.id)}
+                  onClick={() => quoteHandler(el.id, el.author)}
                   value={el.id}
                   name="CommentId"
                   className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -98,31 +116,34 @@ export default function Post() {
             );
           })}
         </div>
+        <form
+          className="flex-1 flex-col my-2 bottom-0 z-40"
+          onSubmit={submitHandler}
+        >
+          {addComment.author && (
+            <div className="mt-1 text-sm font-medium text-gray-900 dark:text-dark bg-gray-50 dark:bg-gray-400 p-2 rounded-t-lg">
+              Quoting: {addComment.author}
+            </div>
+          )}
+          <div className="flex-1 flex bg-gray-50 dark:bg-gray-700 rounded-b-lg">
+            <input
+              onChange={changeHandler}
+              id="content"
+              value={addComment.content}
+              name="content"
+              rows="4"
+              className="block p-2.5 w-full h-12 text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 bg-gray-50 dark:bg-gray-700 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Leave a reply..."
+            />
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
-
-      <form className="max-w-sm mx-auto" onSubmit={submitHandler}>
-        <label
-          htmlFor="content"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Your reply
-        </label>
-        <textarea
-          onChange={changeHandler}
-          id="content"
-          value={addComment.content}
-          name="content"
-          rows="4"
-          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Leave a reply..."
-        ></textarea>
-        <button
-          type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
-      </form>
     </>
   );
 }

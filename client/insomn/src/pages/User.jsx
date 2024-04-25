@@ -9,9 +9,12 @@ export default function User() {
   useEffect(() => {
     dispatch(fetchUser());
   }, []);
+
   return (
     <>
-      <p>{userData.username}</p>
+      <div className="h-screen flex grid justify-center content-center dark:bg-gray-800">
+        <h1 className="text-2xl font-extrabold text-slate-400 mt-5">{`current user: ${userData.username}`}</h1>
+      </div>
       <EditUserModal />
     </>
   );

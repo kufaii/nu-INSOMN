@@ -1,48 +1,48 @@
 const { where, Op } = require('sequelize')
-const {createToken, verifyToken, crypt, compare} = require('../helpers/helper')
-const {User, Post, Comment, Category, Follow} = require('../models')
-const {OAuth2Client} = require('google-auth-library')
+const { createToken, verifyToken, crypt, compare } = require('../helpers/helper')
+const { User, Post, Comment, Category, Follow } = require('../models')
+const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client();
-const {CLIENT_ID, ACCESS_KEY } = process.env
+const { CLIENT_ID, ACCESS_KEY } = process.env
 
 const axios = require('axios')
 
-class Controller{
-    static async login(req, res, next){
+class Controller {
+    static async login(req, res, next) {
         try {
-            const {email, password} = req.body
-            if(!email){
-                throw { name: "invalid_email/username/password"}
+            const { email, password } = req.body
+            if (!email) {
+                throw { name: "invalid_email/username/password" }
             }
-            let user = await User.findOne({ where: {email: email}})
-            if(!user){
-                throw { name: "invalid_email/username/password"}
+            let user = await User.findOne({ where: { email: email } })
+            if (!user) {
+                throw { name: "invalid_email/username/password" }
             }
 
             const verify = compare(password, user.password)
-            
-            if(!verify){
-                throw { name: "invalid_email/username/password"}
+
+            if (!verify) {
+                throw { name: "invalid_email/username/password" }
             }
 
-            const payload = {id: user.id};
+            const payload = { id: user.id };
             const access_token = createToken(payload);
 
-            res.status(200).json({ data: access_token });
-            
+            res.status(200).json({ data: { access_token, username: user.username } });
+
         } catch (error) {
             next(error)
         }
     }
-    static async googleLogin(req, res, next){
-        try { 
-            const {google_token} = req.headers
+    static async googleLogin(req, res, next) {
+        try {
+            const { google_token } = req.headers
             const ticket = await client.verifyIdToken({
                 idToken: google_token,
                 audience: CLIENT_ID
             })
 
-            console.log(">>>>>>",ticket);
+            console.log(">>>>>>", ticket);
 
             const googlePayload = ticket.getPayload()
 
@@ -61,30 +61,31 @@ class Controller{
                 id: user.id
             }
 
-            const accessToken = createToken(payload)
+            const access_token = createToken(payload)
 
             res.status(200).json({
-                accessToken
+                access_token
             })
         } catch (error) {
             next(error)
         }
     }
-    static async register(req, res, next){
+    static async register(req, res, next) {
         try {
+            console.log(req.body);
             // const {email, password, username} = req.body
             const newUser = await User.create(req.body)
             delete newUser.dataValues.password
-            
-            res.status(201).json({ message: "user added", data: newUser})
+
+            res.status(201).json({ message: "user added", data: newUser })
 
         } catch (error) {
             next(error)
         }
     }
-    static async post(req, res, next){
+    static async post(req, res, next) {
         try {
-            const allPost = await Post.findAll({order:[['votes', 'DESC']]})
+            const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], include: Category })
 
             res.status(200).json({
                 data: allPost
@@ -93,13 +94,13 @@ class Controller{
             next(error)
         }
     }
-    static async postByCategory(req, res, next){
+    static async postByCategory(req, res, next) {
         try {
             let followingId = []
-            const {id} = req.user
-            const user = await User.findByPk(id,{
+            const { id } = req.user
+            const user = await User.findByPk(id, {
                 attributes: ['id', 'username'],
-                include:[
+                include: [
                     {
                         model: Category,
                         through: 'Follows',
@@ -107,16 +108,16 @@ class Controller{
                     }
                 ]
             })
-            console.log("ini user >>>>>>>", user);
             user.Categories.map(el => followingId.push(el.id))
 
             const allPost = await Post.findAll({
-                where:{
-                    CategoryId:{
+                attributes: { exclude: ['UserId'] },
+                where: {
+                    CategoryId: {
                         [Op.in]: followingId
                     }
                 },
-                order:[['votes', 'DESC']]
+                order: [['votes', 'DESC']], include: Category
             })
 
             res.status(200).json({
@@ -126,9 +127,9 @@ class Controller{
             next(error)
         }
     }
-    static async top5Post(req, res, next){
-        try { 
-            const allPost = await Post.findAll({limit: 5,order:[['votes', 'DESC']]})
+    static async top5Post(req, res, next) {
+        try {
+            const allPost = await Post.findAll({ attributes: { exclude: ['UserId'] }, limit: 5, order: [['votes', 'DESC']] })
 
             res.status(200).json({
                 data: allPost
@@ -137,9 +138,9 @@ class Controller{
             next(error)
         }
     }
-    static async postById(req, res, next){
-        try { 
-            const postById = await Post.findByPk(req.params.id)
+    static async postById(req, res, next) {
+        try {
+            const postById = await Post.findByPk(req.params.id, { attributes: { exclude: ['UserId'] } })
 
             res.status(200).json({
                 data: postById
@@ -148,44 +149,51 @@ class Controller{
             next(error)
         }
     }
-    static async addPost(req, res, next){
-        try { 
-            const newPost  = await Post.create(req.body)
+    static async addPost(req, res, next) {
+        try {
+            const { title, CategoryId } = req.body
 
-            res.status(201).json({ data : newPost})
+            const UserId = req.user.id
+            const newPost = await Post.create({
+                title,
+                CategoryId,
+                UserId
+            })
+
+            res.status(201).json({ data: newPost })
         } catch (error) {
             next(error)
         }
     }
-    static async deletePost(req, res, next){
-        try { 
-            const deleted = await Post.findByPk(req.params.id)
-            if(!deleted){
-                throw {name: "not found"}
+    static async deletePost(req, res, next) {
+        try {
+            const deleted = await Post.findByPk(req.params.id, { attributes: { exclude: ['UserId'] }, })
+            if (!deleted) {
+                throw { name: "not found" }
             }
-            await Post.destroy({where: { id: req.params.id }});
-            
-            res.status(200).json({ data: deleted})
+            await Post.destroy({ where: { id: req.params.id } });
+
+            res.status(200).json({ data: deleted })
         } catch (error) {
             next(error)
         }
     }
-    static async votePost(req, res, next){
-        try { 
-            const {id} = req.params
-            const {vote} = req.body //accept either -1 or 1
+    static async votePost(req, res, next) {
+        try {
+            const { id } = req.params
+            const { vote } = req.body //accept either -1 or 1
             const checkPost = await Post.findByPk(id)
-            if(!checkPost) throw { name : "not found"}
+            if (!checkPost) throw { name: "not found" }
 
-            const data = await Post.increment('votes', {by:vote, where:{id}})
+            const data = await Post.increment('votes', { by: vote, where: { id } })
 
             res.status(200).json({ data })
         } catch (error) {
             next(error)
         }
     }
-    static async allCategory(req, res, next){
-        try { 
+    static async allCategory(req, res, next) {
+        try {
             const category = await Category.findAll()
 
             res.status(200).json({ data: category })
@@ -193,9 +201,9 @@ class Controller{
             next(error)
         }
     }
-    static async postCategory(req, res, next){
-        try { 
-            const postPerCategory = await Post.findAll({order:[['votes', 'DESC']],where:{CategoryId: req.params.id}})
+    static async postCategory(req, res, next) {
+        try {
+            const postPerCategory = await Post.findAll({ attributes: { exclude: ['UserId'] }, order: [['votes', 'DESC']], where: { CategoryId: req.params.id }, include: Category })
 
             res.status(200).json({
                 data: postPerCategory
@@ -204,14 +212,14 @@ class Controller{
             next(error)
         }
     }
-    static async comment(req, res, next){
+    static async comment(req, res, next) {
         try {
             const PostId = req.params.id
             const comment = await Comment.findAll({
                 where: {
                     PostId
                 },
-                include:[
+                include: [
                     {
                         model: Comment,
                         attributes: ['author', 'content'],
@@ -225,17 +233,17 @@ class Controller{
             next(error)
         }
     }
-    static async addComment(req, res, next){
-        try { 
-            const {content, CommentId} = req.body
+    static async addComment(req, res, next) {
+        try {
+            const { content, CommentId } = req.body
             const id = req.params.id
             const UserId = req.user.id
             let quoteId = CommentId
-            if(!quoteId){
+            if (!quoteId) {
                 quoteId = null
             }
 
-            const {username} = await User.findByPk(UserId)
+            const { username } = await User.findByPk(UserId)
 
             const comment = await Comment.create({
                 content,
@@ -243,17 +251,17 @@ class Controller{
                 CommentId: quoteId,
                 PostId: id
             });
-            res.status(201).json({ data: comment})
+            res.status(201).json({ data: comment })
         } catch (error) {
             next(error)
         }
     }
-    static async user(req, res, next){
-        try { 
-            const {id} = req.user
-            const user = await User.findByPk(id,{
+    static async user(req, res, next) {
+        try {
+            const { id } = req.user
+            const user = await User.findByPk(id, {
                 attributes: ['id', 'username'],
-                include:[
+                include: [
                     {
                         model: Category,
                         through: 'Follows',
@@ -262,15 +270,15 @@ class Controller{
                 ]
             })
 
-            res.status(200).json({ data: user})
+            res.status(200).json({ data: user })
         } catch (error) {
             next(error)
         }
     }
-    static async editUser(req, res, next){
-        try { 
+    static async editUser(req, res, next) {
+        try {
             const checkUser = await User.findByPk(req.params.id)
-            if(!checkUser) throw { name : "not found"}
+            if (!checkUser) throw { name: "not found" }
             checkUser.dataValues.username = req.body.username
             const status = await checkUser.save()
             const data = {
@@ -283,8 +291,8 @@ class Controller{
             next(error)
         }
     }
-    static async addFollow(req, res, next){
-        try { 
+    static async addFollow(req, res, next) {
+        try {
             const follow = await Follow.create({
                 UserId: req.user.id,
                 CategoryId: req.params.id
@@ -295,40 +303,40 @@ class Controller{
             next(error)
         }
     }
-    static async deleteFollow(req, res, next){
-        try { 
+    static async deleteFollow(req, res, next) {
+        try {
             const deleted = await Follow.findOne({
-                where:{
+                where: {
                     UserId: req.user.id,
                     CategoryId: req.params.id
                 }
             })
-            if(!deleted){
-                throw {name: "not found"}
+            if (!deleted) {
+                throw { name: "not found" }
             }
             await Follow.destroy({
-                where: { 
+                where: {
                     UserId: req.user.id,
-                    CategoryId: req.params.id 
+                    CategoryId: req.params.id
                 }
             });
-            
-            res.status(200).json({ data: deleted}) 
+
+            res.status(200).json({ data: deleted })
         } catch (error) {
             next(error)
         }
     }
-    static async images(req, res, next){
-        try { 
-            const {data} = await axios.get(`https://api.unsplash.com/photos/random?count=1&client_id=${ACCESS_KEY}`)
+    static async images(req, res, next) {
+        try {
+            const { data } = await axios.get(`https://api.unsplash.com/photos/random?count=1&client_id=${ACCESS_KEY}`)
             res.status(200).json(data)
         } catch (error) {
             next(error)
         }
     }
-    static async template(req, res, next){
-        try { 
-            
+    static async template(req, res, next) {
+        try {
+
         } catch (error) {
             next(error)
         }

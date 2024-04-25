@@ -1,19 +1,32 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategory } from "../store/features/post/Post";
 import { fetchUser } from "../store/features/user/User";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CategoryButton from "./CategoryButton";
+import FollowingCategoryButton from "./FollowingCategoryButton";
+import socket from "../socket";
+import { FetchCategoryContext } from "../contexts/FetchCategory";
+import image from "../assets/download.jpg";
 
 export default function SideBar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let userData = useSelector((state) => state.user.data);
   let categoryData = useSelector((state) => state.user.followingCategory);
   let categories = useSelector((state) => state.post.category);
+  const newCategories = useContext(FetchCategoryContext);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    socket.disconnect();
+
+    navigate("/login");
+  };
 
   useEffect(() => {
     dispatch(fetchUser());
-    dispatch(fetchCategory());
+    newCategories.ambilData();
   }, []);
 
   return (
@@ -43,12 +56,18 @@ export default function SideBar() {
 
       <aside
         id="separator-sidebar"
-        className="fixed top-0 left-0 z-40 w-80 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="fixed top-0 left-0 z-40 w-80 h-screen border-r-2 border-gray-700 transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <Link to="/home" className="flex items-center ps-2.5 mb-5">
-            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+            <img
+              src={image}
+              alt=""
+              className="w-8 h-8 mr-2 rounded-md transition duration-75"
+              aria-hidden="true"
+            />
+            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               INSOMN
             </span>
           </Link>
@@ -88,27 +107,44 @@ export default function SideBar() {
               </Link>
             </li>
             <li>
-              <Link
-                to="/logout"
+              <button
+                onClick={handleLogout}
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <span className="flex-1 ms-3 whitespace-nowrap">Logout</span>
-              </Link>
+                <span className="flex-1 font-semibold text-red-700">
+                  Logout
+                </span>
+              </button>
             </li>
           </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categoryData.length > 1 &&
-              categoryData.map((category) => (
-                <li>
-                  <CategoryButton key={category.id} category={category} />
-                </li>
-              ))}
-          </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categories.map((category) => {
-              return <CategoryButton key={category.id} category={category} />;
-            })}
-          </ul>
+          {categoryData.length > 0 && (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">
+                  Following
+                </h1>
+                {categoryData.map((category, i) => (
+                  <li key={i}>
+                    <FollowingCategoryButton category={category} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {newCategories.cobacoba && (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">
+                  All Category
+                </h1>
+                {newCategories.cobacoba.data.map((category) => (
+                  <li key={category.id}>
+                    <CategoryButton category={category} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </aside>
     </>

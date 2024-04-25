@@ -2,10 +2,11 @@ import axios from "../config";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import image from "../assets/download.png";
 
 export default function Login({}) {
   const navigate = useNavigate();
-  const [image, setImage] = useState([]);
+  // const [image, setImage] = useState([]);
   const [credential, setCredential] = useState({
     email: "",
     password: "",
@@ -27,8 +28,9 @@ export default function Login({}) {
         url: "/login",
         data: credential,
       });
-      console.log(">>>>>>>>>>>>>>>>>>>", data);
-      localStorage.access_token = data.data;
+      // console.log(">>>>>>>>>>>>>>>>>>>", data);
+      localStorage.access_token = data.data.access_token;
+      localStorage.username = data.data.username;
 
       navigate("/home");
     } catch (error) {
@@ -50,25 +52,25 @@ export default function Login({}) {
     navigate("/home");
   }
 
-  const fetchImage = async () => {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: "/images",
-        headers: {
-          authorization: `Bearer ` + localStorage.access_token,
-        },
-      });
-      console.log(">>>>>>>>>>>>>>>", data);
-      setImage(data[0]);
-      console.log(">>>>>>>>>>>>>>>asdasd", image);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchImage = async () => {
+  //   try {
+  //     const { data } = await axios({
+  //       method: "get",
+  //       url: "/images",
+  //       headers: {
+  //         authorization: `Bearer ` + localStorage.access_token,
+  //       },
+  //     });
+  //     // console.log(">>>>>>>>>>>>>>>", data);
+  //     setImage(data[0]);
+  //     // console.log(">>>>>>>>>>>>>>>asdasd", image);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
-    fetchImage();
+    // fetchImage();
     window.onload = function () {
       google.accounts.id.initialize({
         client_id:
@@ -87,10 +89,10 @@ export default function Login({}) {
       <div className="flex h-screen">
         <div className="hidden lg:flex items-center justify-center flex-1 bg-gray-800 text-black">
           <div className="max-w-md text-center">
-            <img src={image?.urls?.small ?? ""} className="w-20%" alt="" />
             <h1 className="text-8xl font-bold mb-6 text-white text-center">
               INSOMN
             </h1>
+            <img src={image} className="w-20%" alt="" />
             <h3 className="text-2xl font-semibold mb-6 text-slate-300 text-center">
               Verily, why must thou sleep when thou canst idle away time here?
             </h3>

@@ -1,8 +1,8 @@
-const Controller = require('./controllers/controller')
+ const Controller = require('./controllers/controller')
 
 const router = require('express').Router()
 const { authentication } = require('./middlewares/authentication');
-const {godOnly} = require('./middlewares/godOnly')
+const {godOnly,authUserForAdmin} = require('./middlewares/godOnly')
 
 router.get('/', (req, res) => {
     res.send('RUNNING!')
@@ -18,7 +18,7 @@ router.post('/post', authentication, Controller.addPost)
 router.get('/post/top5', authentication, Controller.top5Post)
 router.get('/post/follow', authentication, Controller.postByCategory)
 router.get('/post/:id', authentication, Controller.postById)
-router.delete('/post/:id', authentication, godOnly, Controller.deletePost)
+router.delete('/post/:id', authentication, authUserForAdmin, Controller.deletePost)
 router.put('/post/:id/vote', authentication, Controller.votePost)
 router.get('/category', authentication, Controller.allCategory)
 router.get('/category/:id', authentication, Controller.postCategory)
@@ -28,6 +28,5 @@ router.get('/comment/:id', authentication, Controller.comment)
 router.post('/comment/:id', authentication, Controller.addComment)
 router.get('/user', authentication, Controller.user)
 router.put('/user/:id', authentication, Controller.editUser)
-
 
 module.exports = router
