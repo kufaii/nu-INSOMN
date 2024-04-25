@@ -56,7 +56,7 @@ export default function SideBar() {
 
       <aside
         id="separator-sidebar"
-        className="fixed top-0 left-0 z-40 w-80 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="fixed top-0 left-0 z-40 w-80 h-screen border-r-2 border-gray-700 transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -111,14 +111,18 @@ export default function SideBar() {
                 onClick={handleLogout}
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <span className="flex-1 ms-3 whitespace-nowrap">Logout</span>
+                <span className="flex-1 font-semibold text-red-700">
+                  Logout
+                </span>
               </button>
             </li>
           </ul>
           {categoryData.length > 0 && (
             <>
               <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-                <h1 className="text-white ml-2 text-xl font-semibold mb-4">Following</h1>
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">
+                  Following
+                </h1>
                 {categoryData.map((category, i) => (
                   <li key={i}>
                     <FollowingCategoryButton category={category} />
@@ -130,7 +134,9 @@ export default function SideBar() {
           {newCategories.cobacoba && (
             <>
               <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-                <h1 className="text-white ml-2 text-xl font-semibold mb-4">All Category</h1>
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">
+                  All Category
+                </h1>
                 {newCategories.cobacoba.data.map((category) => (
                   <li key={category.id}>
                     <CategoryButton category={category} />
@@ -139,7 +145,6 @@ export default function SideBar() {
               </ul>
             </>
           )}
-
         </div>
       </aside>
     </>

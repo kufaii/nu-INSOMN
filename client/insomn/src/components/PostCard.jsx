@@ -2,14 +2,18 @@ import { Link } from "react-router-dom";
 import axios from "../config";
 import socket from "../socket";
 import { useDispatch } from "react-redux";
-import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
+import {
+  fetchFollowingPost,
+  fetchPost,
+  fetchPostByCategory,
+} from "../store/features/post/Post";
 import { useEffect, useState } from "react";
 // import { BiLike, BiSolidLike, BiDislike, BiSolidDislike  } from "react-icons/bi";
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
   const [time, setTime] = useState(post.createdAt);
-  const [alreadyVote, setAlreadyVote] = useState(false)
+  const [alreadyVote, setAlreadyVote] = useState(false);
 
   const deleteHandler = async () => {
     try {
@@ -20,33 +24,31 @@ export default function PostCard({ post }) {
           authorization: `Bearer ` + localStorage.access_token,
         },
       });
-      console.log("Massssukkk")
+      console.log("Massssukkk");
       socket.emit("new-post");
       dispatch(fetchPost());
     } catch (error) {
-      console.log("")
+      console.log("");
     }
   };
 
   const voteHandler = async (e) => {
     try {
-      console.log(e.target.value, "valuuuuuueeee")
-      if (!alreadyVote) {
-        console.log("masukk boyyyy")
-        await axios({
-          method: "put",
-          url: `/post/${post.id}/vote`,
-          data: {
-            vote: e.target.value,
-          },
-          headers: {
-            authorization: "Bearer " + localStorage.access_token,
-          },
-        });
-      }
+      // console.log(e.target.value, "valuuuuuueeee")
+      //   console.log("masukk boyyyy")
+      await axios({
+        method: "put",
+        url: `/post/${post.id}/vote`,
+        data: {
+          vote: +e.target.value,
+        },
+        headers: {
+          authorization: "Bearer " + localStorage.access_token,
+        },
+      });
 
       socket.emit("new-vote");
-      setAlreadyVote(!alreadyVote)
+      setAlreadyVote(!alreadyVote);
       dispatch(fetchPostByCategory(post.Category.id));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
@@ -54,7 +56,7 @@ export default function PostCard({ post }) {
       console.log(error);
     }
   };
-  console.log(alreadyVote, "status  sssssssssssssss")
+  // console.log(alreadyVote, "status  sssssssssssssss")
 
   const timeFormat = () => {
     const dateString = new Date(time);
@@ -80,7 +82,7 @@ export default function PostCard({ post }) {
           to={`/post/${post.id}`}
           className="block w-100 p-6 bg-white rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700 "
         >
-          <p className="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700 dark:text-gray-400 truncate ...">
             {post.Category && post?.Category?.name}
           </p>
           <div className="">
@@ -92,11 +94,15 @@ export default function PostCard({ post }) {
             Votes: {post.votes} Created at: {!time.includes("NaN") && time}
           </p>
         </Link>
-        <button onClick={voteHandler} value={alreadyVote ? 1 : -1} >{alreadyVote ? "<BiLike />"
-          : "<BiSolidLike />"}</button>
-        <button onClick={voteHandler} value={alreadyVote ? -1 : 1} >{alreadyVote ? "<BiSolidDislike />"
-          : "<BiDislike />"}</button>
+        <div className="flex items-center justify-center">
+          <button onClick={voteHandler} value={alreadyVote ? -1 : 1}>
+            {alreadyVote ? "👍🏻" : "👍🏿"}
+          </button>
+          <button onClick={voteHandler} value={alreadyVote ? 1 : -1}>
+            {alreadyVote ? "👎🏿" : "👎🏻"}
+          </button>
           <button onClick={deleteHandler}>Delete boyy</button>
+        </div>
       </div>
       {/* 
       <button

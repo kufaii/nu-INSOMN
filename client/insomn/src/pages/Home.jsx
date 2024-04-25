@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     socket.auth = {
-      username: localStorage.username
+      username: localStorage.username,
     };
     socket.connect();
     socket.on("post-new", (value) => {
@@ -25,9 +25,9 @@ export default function Home() {
     dispatch(fetchPost());
 
     return () => {
-      socket.off("post-new")
-      socket.off("vote-new")
-    }
+      socket.off("post-new");
+      socket.off("vote-new");
+    };
   }, []);
 
   return (
@@ -36,35 +36,36 @@ export default function Home() {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
             <tr>
-              <td scope="col" className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+              <td
+                scope="col"
+                className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600"
+              >
                 <div className="w-100 flex flex-wrap items-center justify-between mx-auto p-4">
-                    <Link
-                      to="/home"
-                      className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white  rounded bg-transparent md:p-0 "
-                      aria-current="page"
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/home/following"
-                      className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white rounded bg-transparent md:p-0 "
-                      aria-current="page"
-                    >
-                      Following
-                    </Link>
+                  <Link
+                    to="/home"
+                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white  rounded bg-transparent md:p-0 "
+                    aria-current="page"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/home/following"
+                    className="flex justify-center w-1/2 font-extrabold py-2 px-3 text-white rounded bg-transparent md:p-0 "
+                    aria-current="page"
+                  >
+                    Following
+                  </Link>
                 </div>
               </td>
             </tr>
           </thead>
           <tbody>
             {allPost.map((el) => (
-              <>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="px-6 py-4">
-                    <PostCard key={el.id} post={el} />
-                  </td>
-                </tr>
-              </>
+              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-6 py-4">
+                  <PostCard key={el.id} post={el} />
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
