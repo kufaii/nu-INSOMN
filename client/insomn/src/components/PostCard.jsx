@@ -4,6 +4,7 @@ import socket from "../socket";
 import { useDispatch } from "react-redux";
 import { fetchFollowingPost, fetchPost } from "../store/features/post/Post";
 import { useEffect, useState } from "react";
+// import { BiLike, BiSolidLike, BiDislike, BiSolidDislike  } from "react-icons/bi";
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ export default function PostCard({ post }) {
           authorization: `Bearer ` + localStorage.access_token,
         },
       });
+      console.log("Massssukkk")
       socket.emit("new-post");
       dispatch(fetchPost());
     } catch (error) {
@@ -87,12 +89,15 @@ export default function PostCard({ post }) {
             </h5>
           </div>
           <p className="font-normal text-gray-700 dark:text-gray-400">
-            Votes: {post.votes} Created at: {post.createdAt}
+            Votes: {post.votes} Created at: {!time.includes("NaN") && time}
           </p>
         </Link>
-        <button onClick={voteHandler} value={alreadyVote ? 1 : -1} >{alreadyVote ? "Dislike" : "Like"}</button>
+        <button onClick={voteHandler} value={alreadyVote ? 1 : -1} >{alreadyVote ? "<BiLike />"
+          : "<BiSolidLike />"}</button>
+        <button onClick={voteHandler} value={alreadyVote ? -1 : 1} >{alreadyVote ? "<BiSolidDislike />"
+          : "<BiDislike />"}</button>
+          <button onClick={deleteHandler}>Delete boyy</button>
       </div>
-
       {/* 
       <button
         onClick={deleteHandler}

@@ -12,7 +12,9 @@ export default function User() {
 
   return (
     <>
-      <p>{userData.username}</p>
+    <div className="h-screen flex justify-center">
+    <h1 className="text-2xl font-extrabold text-slate-400 mt-5">{`current user: ${userData.username}`}</h1>
+    </div>
       <EditUserModal />
     </>
   );

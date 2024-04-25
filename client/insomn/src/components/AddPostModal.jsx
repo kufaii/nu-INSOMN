@@ -9,8 +9,7 @@ import {
 } from "../store/features/post/Post";
 import { FetchCategoryContext } from "../contexts/FetchCategory";
 
-export default function AddPostModal({ idCategory }) {
-  console.log(idCategory, "ID CATEGORYYYYYYYYYYYYYYYYYYYYY");
+export default function AddPostModal() {
   const addCategories = useSelector((state) => state.post.category);
   const dispatch = useDispatch();
   const newCategories = useContext(FetchCategoryContext);
@@ -63,8 +62,8 @@ export default function AddPostModal({ idCategory }) {
         access_token: localStorage.access_token,
       };
 
-      socket.emit("new-post", idCategory);
-      dispatch(fetchPostByCategory(post.Category.id));
+      socket.emit("new-post", post.CategoryId);
+      dispatch(fetchPostByCategory(post.CategoryId));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
       handleModalToggle();

@@ -4,6 +4,7 @@ import { fetchTop5Post } from "../store/features/post/Post";
 import PostCard from "./PostCard";
 import socket from "../socket";
 import UserCard from "./UserCard";
+import TopPostCard from "./TopPostCard";
 
 export default function AdditionalSideBar() {
   const dispatch = useDispatch();
@@ -31,16 +32,16 @@ export default function AdditionalSideBar() {
         aria-label="Sidebar"
       >
         <div className="h-1/2 px-3 py-4 overflow-y-auto">
-          <p className="flex items-center pb-5">
-            <span className="text-xl font-semibold whitespace-nowrap dark:text-white">
+          <div className="flex flex-column ml-2">
+            <p className="flex items-center pb-5 text-3xl font-semibold whitespace-nowrap dark:text-white">
               Top Post
-            </span>
-          </p>
+            </p>
+          </div>
           <ul className="space-y-2 font-medium">
             {topPost.map((el) => {
               return (
                 <li>
-                  <PostCard key={el.id} post={el} />
+                  <TopPostCard key={el.id} post={el} />
                 </li>
               );
             })}
@@ -52,15 +53,14 @@ export default function AdditionalSideBar() {
               === Online User ===
             </span>
           </p>
-          <ul className="space-y-2 font-medium">
+          <div className="space-y-2 font-medium">
+            <div className=""></div>
             {onlineUser.map((el, i) => {
               return (
-                <li>
-                  <UserCard key={i} user={el} />
-                </li>
+                <UserCard key={i} user={el} />
               );
             })}
-          </ul>
+          </div>
         </div>
       </aside>
     </>
