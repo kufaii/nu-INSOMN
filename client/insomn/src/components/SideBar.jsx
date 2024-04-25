@@ -115,20 +115,31 @@ export default function SideBar() {
               </button>
             </li>
           </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {categoryData.length > 0 &&
-              categoryData.map((category, i) => (
-                <li>
-                  <FollowingCategoryButton key={i} category={category} />
-                </li>
-              ))}
-          </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {newCategories.cobacoba &&
-              newCategories.cobacoba.data.map((category) => {
-                return <CategoryButton key={category.id} category={category} />;
-              })}
-          </ul>
+          {categoryData.length > 0 && (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">Following</h1>
+                {categoryData.map((category, i) => (
+                  <li key={i}>
+                    <FollowingCategoryButton category={category} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {newCategories.cobacoba && (
+            <>
+              <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+                <h1 className="text-white ml-2 text-xl font-semibold mb-4">All Category</h1>
+                {newCategories.cobacoba.data.map((category) => (
+                  <li key={category.id}>
+                    <CategoryButton category={category} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
         </div>
       </aside>
     </>
