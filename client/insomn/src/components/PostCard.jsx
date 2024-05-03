@@ -106,7 +106,7 @@ export default function PostCard({ post }) {
             </h5>
           </div>
           <p className="font-normal text-gray-700 dark:text-gray-400">
-            Votes: {post.votes} Created at: {!time.includes("NaN") && time}
+            Posted at: {!time.includes("NaN") && time}
           </p>
         </Link>
       </div>
