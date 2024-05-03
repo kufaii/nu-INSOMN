@@ -95,7 +95,7 @@ export default function PostCard({ post }) {
         </div>
         <Link
           to={`/post/${post.id}`}
-          className="basis-11/12 block w-100 p-6 bg-white rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700 "
+          className="basis-11/12 block w-100 p-6 bg-white rounded-lg hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700 "
         >
           <p className="font-normal text-gray-700 dark:text-gray-400 truncate ...">
             {post.Category && post?.Category?.name}
