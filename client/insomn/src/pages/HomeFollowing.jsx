@@ -8,6 +8,7 @@ import AddPostModal from "../components/AddPostModal";
 import PostCard from "../components/PostCard";
 import { Link } from "react-router-dom";
 import socket from "../socket";
+import NavBar from "../components/NavBar";
 
 export default function HomeFollowing() {
   const dispatch = useDispatch();
@@ -31,6 +32,18 @@ export default function HomeFollowing() {
 
   return (
     <>
+      <div className="relative vh-100 w-100 ">
+        <NavBar />
+        <div className="bg-white  dark:bg-gray-800 overflow-auto">
+          {followingPost.map((el) => (
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
+              <PostCard key={el.id} post={el} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -67,7 +80,7 @@ export default function HomeFollowing() {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       <AddPostModal />
       {/* <p>---- cek following post ----</p>

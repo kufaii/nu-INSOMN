@@ -13,7 +13,8 @@ import { useEffect, useState } from "react";
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
   const [time, setTime] = useState(post.createdAt);
-  const [alreadyVote, setAlreadyVote] = useState(false);
+  // const [alreadyVote, setAlreadyVote] = useState(false);
+  const [alreadyVote, setAlreadyVote] = useState(0);
 
   const deleteHandler = async () => {
     try {
@@ -33,9 +34,12 @@ export default function PostCard({ post }) {
   };
 
   const voteHandler = async (e) => {
+    const newVote = +e.target.value;
+    if (alreadyVote == newVote) {
+      throw "already vote dumbass";
+    }
+
     try {
-      // console.log(e.target.value, "valuuuuuueeee")
-      //   console.log("masukk boyyyy")
       await axios({
         method: "put",
         url: `/post/${post.id}/vote`,
@@ -48,7 +52,7 @@ export default function PostCard({ post }) {
       });
 
       socket.emit("new-vote");
-      setAlreadyVote(!alreadyVote);
+      setAlreadyVote(+e.target.value);
       dispatch(fetchPostByCategory(post.Category.id));
       dispatch(fetchPost());
       dispatch(fetchFollowingPost());
@@ -77,7 +81,36 @@ export default function PostCard({ post }) {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex flex-row">
+        <div className="basis-1/12 grid grid-cols-1 items-center text-center justify-center">
+          <button onClick={voteHandler} value={1}>
+            {alreadyVote ? (alreadyVote === 1 ? "👍🏻" : "👍🏿") : "👍🏿"}
+          </button>
+          <p className="font-normal text-gray-700 dark:text-gray-400">
+            {post.votes}
+          </p>
+          <button onClick={voteHandler} value={-1}>
+            {alreadyVote ? (alreadyVote === -1 ? "👎🏻" : "👎🏿") : "👎🏿"}
+          </button>
+        </div>
+        <Link
+          to={`/post/${post.id}`}
+          className="basis-11/12 block w-100 p-6 bg-white rounded-lg hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700 "
+        >
+          <p className="font-normal text-gray-700 dark:text-gray-400 truncate ...">
+            {post.Category && post?.Category?.name}
+          </p>
+          <div className="">
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white ">
+              {post.title}
+            </h5>
+          </div>
+          <p className="font-normal text-gray-700 dark:text-gray-400">
+            Posted at: {!time.includes("NaN") && time}
+          </p>
+        </Link>
+      </div>
+      {/* <div className="flex justify-between">
         <Link
           to={`/post/${post.id}`}
           className="block w-100 p-6 bg-white rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800  dark:hover:bg-gray-700 "
@@ -103,7 +136,7 @@ export default function PostCard({ post }) {
           </button>
           <button onClick={deleteHandler}>Delete boyy</button>
         </div>
-      </div>
+      </div> */}
       {/* 
       <button
         onClick={deleteHandler}
