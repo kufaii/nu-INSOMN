@@ -1,6 +1,13 @@
-# This is a fork of phase 2 project for public viewing
+# This is a fork of the phase 2 project for public viewing
 Since the original repo isnt available for the public, im creating this fork solely to showcase my past project
 Deployed but unmaintained version: [Deployed Version](https://yakufaii.web.app/login)
+
+# INSOMN
+A semi-anonymous forum for user to have a civilized freedom for chatting with another user
+
+## Key Feature
+- Username is auto random generated based on animal genus
+- Realtime post, comment and vote
 
 ## Stack Used
 ### Frontend
