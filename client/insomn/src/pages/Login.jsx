@@ -89,11 +89,11 @@ export default function Login({}) {
       <div className="flex h-screen">
         <div className="hidden lg:flex items-center justify-center flex-1 bg-gray-800 text-black">
           <div className="max-w-md text-center">
-            <h1 className="text-8xl font-bold mb-6 text-white text-center">
+            <h1 className="text-8xl font-jersey mb-6 text-white text-center">
               INSOMN
             </h1>
             <img src={image} className="w-20%" alt="" />
-            <h3 className="text-2xl font-semibold mb-6 text-slate-300 text-center">
+            <h3 className="text-2xl font-oswald mb-6 mt-4 text-slate-300 text-center">
               Verily, why must thou sleep when thou canst idle away time here?
             </h3>
           </div>

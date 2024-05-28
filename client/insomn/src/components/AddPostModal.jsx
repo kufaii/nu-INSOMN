@@ -84,10 +84,10 @@ export default function AddPostModal() {
           onClick={handleModalToggle}
           data-modal-target="crud-modal"
           data-modal-toggle="crud-modal"
-          className="fixed sm:ml-80 xl:mr-96 md:mr-0 bottom-8 right-8 z-40 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="fixed sm:ml-80 xl:mr-96 md:mr-0 bottom-8 right-8 z-40 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           type="button"
         >
-          Add Post
+          Add New Post
         </button>
 
         <div
