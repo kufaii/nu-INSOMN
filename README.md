@@ -1,4 +1,4 @@
-# This is a fork of the phase 2 project for public viewing
+# This is a fork project for public viewing
 Since the original repo isnt available for the public, im creating this fork solely to showcase my past project
 Deployed but unmaintained version: [Deployed Version](https://yakufaii.web.app/login)
 
